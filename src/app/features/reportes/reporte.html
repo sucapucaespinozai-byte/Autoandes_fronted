@@ -1,0 +1,38 @@
+<h1>Ingresos por servicio</h1>
+<p>El reporte se calcula en Oracle y excluye las órdenes anuladas.</p>
+@if(error()){
+<p role="alert" class="alert">{{error()}}</p>
+}
+<form class="filters" [formGroup]="form" (ngSubmit)="buscar()">
+  <label>Desde<input type="date" formControlName="desde" /></label
+  ><label>Hasta<input type="date" formControlName="hasta" /></label
+  ><button>Consultar</button>
+</form>
+@if(cargando()){
+<p role="status">Cargando reporte…</p>
+}@else{
+<table>
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Servicio</th>
+      <th>Cantidad total</th>
+      <th>Importe total</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for(r of filas();track r.codigo){
+    <tr>
+      <td>{{r.codigo}}</td>
+      <td>{{r.servicio}}</td>
+      <td>{{r.cantidadTotal}}</td>
+      <td>{{r.importeTotal|currency:'PEN'}}</td>
+    </tr>
+    }@empty{
+    <tr>
+      <td colspan="4">No hay ingresos para el rango seleccionado.</td>
+    </tr>
+    }
+  </tbody>
+</table>
+}

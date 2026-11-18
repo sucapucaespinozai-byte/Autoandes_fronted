@@ -1,0 +1,102 @@
+<h1>Nueva orden</h1>
+@if(error()){
+<p class="alert" role="alert">{{error()}}</p>
+}@if(cargando()){
+<p role="status">Cargando vehículos y servicios…</p>
+}@else{
+<form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <div class="form-grid">
+    <div>
+      <label for="vehiculoId">Vehículo</label
+      ><select id="vehiculoId" formControlName="vehiculoId">
+        <option [ngValue]="0">Selecciona un vehículo</option>
+        @for(v of vehiculos();track v.id){
+        <option [ngValue]="v.id">{{v.placa}} — {{v.clienteNombre}}</option>
+        }</select
+      ><app-field-error
+        [control]="form.controls.vehiculoId"
+        [server]="errores()['vehiculoId']||''"
+      />
+    </div>
+    <div>
+      <label for="kilometraje">Kilometraje</label
+      ><input
+        id="kilometraje"
+        type="number"
+        min="0"
+        max="9999999"
+        formControlName="kilometraje"
+      /><app-field-error
+        [control]="form.controls.kilometraje"
+        [server]="errores()['kilometraje']||''"
+      />
+    </div>
+  </div>
+  <h2>Detalle de servicios</h2>
+  <div formArrayName="detalles">
+    @for(linea of detalles.controls;track linea;let i=$index){
+    <div class="detail-row" [formGroupName]="i">
+      <div>
+        <label [for]="'servicio-'+i">Servicio {{i+1}}</label
+        ><select [id]="'servicio-'+i" formControlName="servicioId">
+          <option [ngValue]="0">Selecciona un servicio</option>
+          @for(s of servicios();track s.id){
+          <option [ngValue]="s.id" [disabled]="usado(s.id,i)">
+            {{s.codigo}} — {{s.nombre}}
+          </option>
+          }</select
+        ><app-field-error
+          [control]="linea.controls.servicioId"
+          [server]="errores()['detalles['+i+'].servicioId']||''"
+        />
+      </div>
+      <div>
+        <label [for]="'cantidad-'+i">Cantidad {{i+1}}</label
+        ><input
+          [id]="'cantidad-'+i"
+          type="number"
+          min="1"
+          max="5"
+          formControlName="cantidad"
+        /><app-field-error
+          [control]="linea.controls.cantidad"
+          [server]="errores()['detalles['+i+'].cantidad']||''"
+        />
+      </div>
+      <div>
+        <span>Subtotal</span
+        ><strong
+          >{{precio(linea.controls.servicioId.value)*linea.controls.cantidad.value|currency:'PEN'}}</strong
+        >
+      </div>
+      <button
+        type="button"
+        (click)="quitar(i)"
+        [attr.aria-label]="'Quitar línea '+(i+1)"
+      >
+        Quitar
+      </button>
+    </div>
+    }
+  </div>
+  <app-field-error
+    [control]="detalles"
+    [server]="errores()['detalles']||''"
+  />@if(detalles.hasError('repetidos')){
+  <p class="field-error">No se permite repetir servicios.</p>
+  }<button type="button" (click)="agregar()" [disabled]="detalles.length>=10">
+    Agregar servicio
+  </button>
+  <p class="total">
+    Total estimado:
+    <strong data-testid="total">{{total()|currency:'PEN'}}</strong>
+  </p>
+  <p>El backend vuelve a calcular los importes con los precios de Oracle.</p>
+  <div class="actions">
+    <a routerLink="/ordenes">Cancelar</a
+    ><button class="primary" [disabled]="guardando()||detalles.length===0">
+      {{guardando()?'Registrando…':'Registrar orden'}}
+    </button>
+  </div>
+</form>
+}

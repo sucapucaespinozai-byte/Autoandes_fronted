@@ -1,0 +1,61 @@
+<a routerLink="/ordenes">Volver a Órdenes</a>@if(error()){
+<p class="alert" role="alert">{{error()}}</p>
+}@if(cargando()){
+<p role="status">Cargando orden…</p>
+}@if(orden();as o){
+<h1>Orden {{o.numero}}</h1>
+@if(registrada){
+<p role="status">Orden {{o.numero}} registrada correctamente.</p>
+}
+<dl>
+  <dt>Fecha</dt>
+  <dd>{{o.fecha|date:'dd/MM/yyyy HH:mm'}}</dd>
+  <dt>Vehículo</dt>
+  <dd>{{o.placa}} — {{o.clienteNombre}}</dd>
+  <dt>Kilometraje</dt>
+  <dd>{{o.kilometraje}}</dd>
+  <dt>Estado</dt>
+  <dd>{{o.estado}}</dd>
+  <dt>Registrada por</dt>
+  <dd>{{o.usuarioRegistro}}</dd>
+</dl>
+<table>
+  <thead>
+    <tr>
+      <th>Servicio</th>
+      <th>Cantidad</th>
+      <th>Precio unitario</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for(d of o.detalles;track d.id){
+    <tr>
+      <td>{{d.servicioCodigo}} — {{d.servicioNombre}}</td>
+      <td>{{d.cantidad}}</td>
+      <td>{{d.precioUnitario|currency:'PEN'}}</td>
+      <td>{{d.subtotal|currency:'PEN'}}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+<p class="total">Total: {{o.total|currency:'PEN'}}</p>
+@if(o.motivoAnulacion){
+<p>Motivo: {{o.motivoAnulacion}}</p>
+}@if(o.estado==='REGISTRADA'){
+<form
+  *appSiPermiso="'ORDEN_ANULAR'"
+  class="record-form"
+  [formGroup]="form"
+  (ngSubmit)="anular()"
+  novalidate
+>
+  <h2>Anular orden</h2>
+  <label for="motivo">Motivo de anulación</label
+  ><textarea id="motivo" formControlName="motivo" rows="3"></textarea
+  ><app-field-error
+    [control]="form.controls.motivo"
+    [server]="errores()['motivo']||''"
+  /><button [disabled]="enviando()">Anular orden</button>
+</form>
+}}

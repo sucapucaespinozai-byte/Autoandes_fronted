@@ -1,0 +1,60 @@
+<div class="heading">
+  <h1>Órdenes de servicio</h1>
+  <a
+    *appSiPermiso="'ORDEN_REGISTRAR'"
+    routerLink="/ordenes/nueva"
+    class="button primary"
+    >Nueva orden</a
+  >
+</div>
+@if(error()){
+<p class="alert" role="alert">{{error()}}</p>
+}
+<form class="filters" [formGroup]="form" (ngSubmit)="buscar()">
+  <label>Placa<input formControlName="placa" placeholder="ABC-123" /></label
+  ><label
+    >Estado<select formControlName="estado">
+      <option value="">Todos</option>
+      <option value="REGISTRADA">Registrada</option>
+      <option value="ANULADA">Anulada</option>
+    </select></label
+  ><label>Desde<input type="date" formControlName="desde" /></label
+  ><label>Hasta<input type="date" formControlName="hasta" /></label
+  ><button>Buscar</button>
+</form>
+@if(cargando()){
+<p role="status">Cargando órdenes…</p>
+}@else{
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Fecha</th>
+        <th>Placa</th>
+        <th>Cliente</th>
+        <th>Estado</th>
+        <th>Total</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(o of lista();track o.id){
+      <tr>
+        <td>{{o.numero}}</td>
+        <td>{{o.fecha|date:'dd/MM/yyyy HH:mm'}}</td>
+        <td>{{o.placa}}</td>
+        <td>{{o.clienteNombre}}</td>
+        <td>{{o.estado}}</td>
+        <td>{{o.total|currency:'PEN'}}</td>
+        <td><a [routerLink]="['/ordenes',o.id]">Ver detalle</a></td>
+      </tr>
+      }@empty{
+      <tr>
+        <td colspan="7">No se encontraron órdenes.</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+}
