@@ -80,7 +80,11 @@ test("CRUD servicios con precios reales y baja logica", async ({
   await page.getByLabel("Precio", { exact: true }).fill("42.50");
   await page.getByLabel("Duración (minutos)", { exact: true }).fill("30");
   await page.getByRole("button", { name: "Guardar", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("guardado");
+  await expect(
+    page
+      .getByRole("status")
+      .filter({ hasText: "Servicio guardado correctamente." }),
+  ).toBeVisible();
   let row = page.locator("tbody tr").filter({ hasText: code });
   await expect(row).toContainText("42.50");
   await row.getByRole("link", { name: "Editar" }).click();
