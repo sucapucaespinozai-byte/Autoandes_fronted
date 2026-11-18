@@ -1,0 +1,60 @@
+<div class="heading">
+  <h1>Servicios</h1>
+  <a
+    *appSiPermiso="'SERVICIO_ESCRIBIR'"
+    routerLink="/servicios/nuevo"
+    class="button primary"
+    >Nuevo servicio</a
+  >
+</div>
+@if(guardado){
+<p role="status">Servicio guardado correctamente.</p>
+}@if(error()){
+<p class="alert" role="alert">{{error()}}</p>
+} <label for="buscar-servicio">Buscar servicio</label
+><input
+  id="buscar-servicio"
+  type="search"
+  (input)="texto.set($any($event.target).value)"
+/>
+@if(cargando()){
+<p role="status">Cargando servicios…</p>
+}@else{
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Duración</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(s of filas();track s.id){
+      <tr>
+        <td>{{s.codigo}}</td>
+        <td>{{s.nombre}}</td>
+        <td>{{s.precio|currency:'PEN'}}</td>
+        <td>{{s.duracionMin}} min</td>
+        <td>{{s.activo?'Activo':'Inactivo'}}</td>
+        <td>
+          <span *appSiPermiso="'SERVICIO_ESCRIBIR'" class="actions"
+            ><a [routerLink]="['/servicios',s.id,'editar']">Editar</a
+            ><button (click)="estado(s)">
+              {{s.activo?'Dar de baja':'Activar'}}</button
+            ><button (click)="eliminar(s)">Eliminar</button></span
+          >
+        </td>
+      </tr>
+      }@empty{
+      <tr>
+        <td colspan="6">No se encontraron servicios.</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+}

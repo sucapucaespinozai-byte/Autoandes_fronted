@@ -1,0 +1,66 @@
+<h1>{{id?'Editar':'Nuevo'}} servicio</h1>
+@if(error()){
+<p class="alert" role="alert">{{error()}}</p>
+}@if(cargando()){
+<p role="status">Cargando…</p>
+}@else{
+<form class="record-form" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <div>
+    <label for="codigo">Código</label
+    ><input id="codigo" type="text" formControlName="codigo" /><app-field-error
+      [control]="form.controls.codigo"
+      [server]="errores()['codigo']||''"
+    />
+  </div>
+  <div>
+    <label for="nombre">Nombre</label
+    ><input id="nombre" type="text" formControlName="nombre" /><app-field-error
+      [control]="form.controls.nombre"
+      [server]="errores()['nombre']||''"
+    />
+  </div>
+  <div>
+    <label for="precio">Precio</label
+    ><input
+      id="precio"
+      type="number"
+      formControlName="precio"
+      min="0.01"
+      step="0.01"
+    /><app-field-error
+      [control]="form.controls.precio"
+      [server]="errores()['precio']||''"
+    />
+  </div>
+  <div>
+    <label for="duracionMin">Duración (minutos)</label
+    ><input
+      id="duracionMin"
+      type="number"
+      formControlName="duracionMin"
+      min="15"
+      max="480"
+    /><app-field-error
+      [control]="form.controls.duracionMin"
+      [server]="errores()['duracionMin']||''"
+    />
+  </div>
+  <div>
+    <label for="activo">Activo</label
+    ><input
+      id="activo"
+      type="checkbox"
+      formControlName="activo"
+    /><app-field-error
+      [control]="form.controls.activo"
+      [server]="errores()['activo']||''"
+    />
+  </div>
+  <div class="actions">
+    <a routerLink="/servicios">Cancelar</a
+    ><button class="primary" [disabled]="guardando()">
+      {{guardando()?'Guardando…':'Guardar'}}
+    </button>
+  </div>
+</form>
+}

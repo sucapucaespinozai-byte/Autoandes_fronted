@@ -1,0 +1,61 @@
+<h1>{{id?'Editar':'Nuevo'}} vehículo</h1>
+@if(error()){
+<p class="alert" role="alert">{{error()}}</p>
+}@if(cargando()){
+<p role="status">Cargando…</p>
+}@else{
+<form class="record-form" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <div>
+    <label for="placa">Placa</label
+    ><input id="placa" type="text" formControlName="placa" /><app-field-error
+      [control]="form.controls.placa"
+      [server]="errores()['placa']||''"
+    />
+  </div>
+  <div>
+    <label for="marca">Marca</label
+    ><input id="marca" type="text" formControlName="marca" /><app-field-error
+      [control]="form.controls.marca"
+      [server]="errores()['marca']||''"
+    />
+  </div>
+  <div>
+    <label for="modelo">Modelo</label
+    ><input id="modelo" type="text" formControlName="modelo" /><app-field-error
+      [control]="form.controls.modelo"
+      [server]="errores()['modelo']||''"
+    />
+  </div>
+  <div>
+    <label for="anio">Año</label
+    ><input
+      id="anio"
+      type="number"
+      formControlName="anio"
+      min="1990"
+      max="2027"
+    /><app-field-error
+      [control]="form.controls.anio"
+      [server]="errores()['anio']||''"
+    />
+  </div>
+  <div>
+    <label for="clienteId">Cliente</label
+    ><select id="clienteId" formControlName="clienteId">
+      <option [ngValue]="0">Selecciona un cliente</option>
+      @for(c of clientes();track c.id){
+      <option [ngValue]="c.id">{{c.nombres}}</option>
+      }</select
+    ><app-field-error
+      [control]="form.controls.clienteId"
+      [server]="errores()['clienteId']||''"
+    />
+  </div>
+  <div class="actions">
+    <a routerLink="/vehiculos">Cancelar</a
+    ><button class="primary" [disabled]="guardando()">
+      {{guardando()?'Guardando…':'Guardar'}}
+    </button>
+  </div>
+</form>
+}

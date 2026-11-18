@@ -1,0 +1,59 @@
+<div class="heading">
+  <h1>Vehículos</h1>
+  <a
+    *appSiPermiso="'VEHICULO_ESCRIBIR'"
+    routerLink="/vehiculos/nuevo"
+    class="button primary"
+    >Nuevo vehículo</a
+  >
+</div>
+@if(guardado){
+<p role="status">Vehículo guardado correctamente.</p>
+}@if(error()){
+<p class="alert" role="alert">{{error()}}</p>
+} <label for="filtro-cliente">Filtrar por cliente</label
+><select id="filtro-cliente" (change)="cargar($any($event.target).value)">
+  <option value="">Todos</option>
+  @for(c of clientes();track c.id){
+  <option [value]="c.id">{{c.nombres}}</option>
+  }
+</select>
+@if(cargando()){
+<p role="status">Cargando vehículos…</p>
+}@else{
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>Placa</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Año</th>
+        <th>Cliente</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(v of lista();track v.id){
+      <tr>
+        <td>{{v.placa}}</td>
+        <td>{{v.marca}}</td>
+        <td>{{v.modelo}}</td>
+        <td>{{v.anio}}</td>
+        <td>{{v.clienteNombre}}</td>
+        <td>
+          <span *appSiPermiso="'VEHICULO_ESCRIBIR'" class="actions"
+            ><a [routerLink]="['/vehiculos',v.id,'editar']">Editar</a
+            ><button (click)="eliminar(v)">Eliminar</button></span
+          >
+        </td>
+      </tr>
+      }@empty{
+      <tr>
+        <td colspan="6">No se encontraron vehículos.</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+}
