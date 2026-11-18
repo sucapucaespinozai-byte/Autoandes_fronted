@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.angular/
+.idea/
+logs/
+*.log
+playwright-report/
+test-results/
